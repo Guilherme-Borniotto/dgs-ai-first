@@ -1,0 +1,53 @@
+{
+  "_comment": "MCP servers do projeto NovaTech Assistant. Autor: Guilherme Borniotto. Least privilege aplicado: paths mínimos por server, fontes de negócio read-only.",
+  "mcpServers": {
+    "filesystem-rw": {
+      "_comment": "Acesso R/W restrito ao código-fonte, specs e skills. NÃO inclui docs nem data — esses têm server separado (read-only).",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "./src",
+        "./specs",
+        "./skills",
+        "./prompts"
+      ]
+    },
+    "filesystem-docs-readonly": {
+      "_comment": "Documentação de negócio NovaTech: SOMENTE LEITURA. Inclui docs/novatech (Anexo A) e data/retrieval-corpus (Anexo B). Agente NUNCA escreve aqui.",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "--readonly",
+        "./docs/novatech",
+        "./data/retrieval-corpus"
+      ]
+    },
+    "git": {
+      "_comment": "Histórico do repositório local. Permite: log, diff, status, show, branch. Operações de commit e stage são expostas mas requerem confirmação explícita do humano.",
+      "command": "uvx",
+      "args": [
+        "mcp-server-git",
+        "--repository",
+        "."
+      ]
+    },
+    "memory": {
+      "_comment": "Grafo persistente de decisões, linguagem ubíqua do projeto e entidades do domínio NovaTech. Persiste entre sessões de agente.",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
+    },
+    "everything": {
+      "_comment": "Servidor de referência para exploração das primitivas MCP (Tools, Resources, Prompts, Sampling). Uso: aprendizado e validação do setup. Não aponta para dados reais do projeto.",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-everything"
+      ]
+    }
+  }
+}
